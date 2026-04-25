@@ -1,12 +1,10 @@
-import { JwtPayload } from "jsonwebtoken";
+import type { AccessTokenPayload } from "../utils/jwt";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: JwtPayload & {
-        sub: string;
-        username: string;
-      };
+      /** Set by routes that require Bearer JWT (e.g. /auth/me). */
+      bearerUser?: AccessTokenPayload;
     }
   }
 }

@@ -1,26 +1,39 @@
-# API (Node.js + TypeScript)
+# Parking API (TypeScript + Express)
 
-REST API with:
-- Express + TypeScript
-- PostgreSQL connection through `pg`
-- user/pass auth with JWT access token
-- public health endpoint (`/api/hello-world`)
+This API is a TypeScript port of the Python backend in `D:\Vezbe\Python\APIPostgreSql\app`.
+Routes are mounted at root (`/health`, `/auth/login`, `/garages`, `/tickets`, ...).
 
 ## Setup
 
-1. Copy env template:
+1. Copy env file:
    - `copy .env.example .env`
-2. Update `DATABASE_URL` and `JWT_SECRET` in `.env`.
-3. Install dependencies:
+2. Install dependencies:
    - `npm install`
-4. Initialize DB table:
-   - `npm run db:init`
-5. Run dev server:
+3. Ensure database schema is migrated using the Python repo Alembic migrations:
+   - from `D:\Vezbe\Python\APIPostgreSql`: `alembic upgrade head`
+4. Run server:
    - `npm run dev`
 
-## Endpoints
+## Authentication
 
-- `GET /api/hello-world` (public)
-- `POST /api/auth/register` (public) body: `{ "username": "...", "password": "..." }`
-- `POST /api/auth/login` (public) body: `{ "username": "...", "password": "..." }`
-- `GET /api/me` (protected, requires `Authorization: Bearer <accessToken>`)
+- If `API_KEY` is empty, requests are open.
+- If `API_KEY` is set, all non-public routes require either:
+  - `X-API-Key: <API_KEY>`
+  - `Authorization: Bearer <token>`
+- Public routes: `GET /`, `GET /health`, `POST /auth/login`, `GET /uploads/*`.
+
+## Main endpoints
+
+- `GET /`
+- `GET /health`
+- `POST /auth/login`
+- `GET /auth/me`
+- `POST /auth/refresh`
+- `/garages`
+- `/vehicle-types`
+- `/vehicles`
+- `/spots`
+- `/tickets`
+- `/payments`
+- `GET /dashboard/analytics`
+- `POST /upload/ticket-image`

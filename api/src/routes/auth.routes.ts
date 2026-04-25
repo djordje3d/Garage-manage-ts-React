@@ -1,84 +1,111 @@
 import bcrypt from "bcryptjs";
-import { Router } from "express";
-import { query } from "../config/db";
-import { signAccessToken } from "../utils/jwt";
+import { Request, Router } from "express";
+import { env } from "../config/env";
+import { ApiError, buildErrorPayload } from "../errors";
+import { createAccessToken, verifyAccessTokenOptional } from "../utils/jwt";
 
-const authRouter = Router();
+const router = Router();
 
-type UserRow = {
-  id: number;
-  username: string;
-  password_hash: string;
-};
-
-authRouter.post("/register", async (req, res) => {
-  const { username, password } = req.body as { username?: string; password?: string };
-
-  if (!username || !password) {
-    res.status(400).json({ message: "username and password are required." });
-    return;
+function verifyPasswordPlain(plain: string): boolean {
+  if (env.authPasswordHash) {
+    try {
+      return bcrypt.compareSync(plain, env.authPasswordHash);
+    } catch {
+      return false;
+    }
   }
+  if (env.authPassword != null) {
+    return plain === env.authPassword;
+  }
+  return false;
+}
 
-  const normalizedUsername = username.trim().toLowerCase();
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  try {
-    const result = await query(
-      `INSERT INTO users (username, password_hash)
-       VALUES ($1, $2)
-       RETURNING id, username`,
-      [normalizedUsername, passwordHash]
+function requireBearer(req: Request) {
+  const auth = req.headers.authorization ?? req.headers.Authorization;
+  if (!auth || typeof auth !== "string" || !auth.toLowerCase().startsWith("bearer ")) {
+    throw new ApiError(
+      401,
+      "UNAUTHORIZED",
+      "Invalid or missing token. Use Authorization: Bearer <token> or X-API-Key.",
+      null
     );
+  }
+  const token = auth.slice(7).trim();
+  const payload = verifyAccessTokenOptional(token);
+  if (!payload) {
+    throw new ApiError(
+      401,
+      "UNAUTHORIZED",
+      "Invalid or missing token. Use Authorization: Bearer <token> or X-API-Key.",
+      null
+    );
+  }
+  return payload;
+}
 
-    const user = result.rows[0] as { id: number; username: string };
-    res.status(201).json({ id: user.id, username: user.username });
-  } catch (error) {
-    const pgError = error as { code?: string };
-    if (pgError.code === "23505") {
-      res.status(409).json({ message: "Username is already taken." });
+router.post("/login", (req, res, next) => {
+  try {
+    const body = req.body as { username?: string; password?: string };
+    if (!env.authUsername) {
+      res.status(503).json(
+        buildErrorPayload(
+          "AUTH_NOT_CONFIGURED",
+          "Login not configured. Set AUTH_USERNAME and AUTH_PASSWORD (or AUTH_PASSWORD_HASH) in .env.",
+          null
+        )
+      );
       return;
     }
-    res.status(500).json({ message: "Registration failed." });
+    if (!body.username || !body.password) {
+      res.status(422).json(
+        buildErrorPayload("VALIDATION_ERROR", "Request validation failed.", {
+          fields: [
+            { field: "username", message: "Required" },
+            { field: "password", message: "Required" }
+          ]
+        })
+      );
+      return;
+    }
+    if (body.username !== env.authUsername || !verifyPasswordPlain(body.password)) {
+      res.status(401).json(
+        buildErrorPayload("INVALID_CREDENTIALS", "Invalid username or password.", null)
+      );
+      return;
+    }
+    const access_token = createAccessToken(body.username);
+    res.json({
+      access_token,
+      token_type: "bearer",
+      expires_in: env.jwtExpireMinutes * 60,
+      preferred_language: env.authPreferredLanguage
+    });
+  } catch (e) {
+    next(e);
   }
 });
 
-authRouter.post("/login", async (req, res) => {
-  const { username, password } = req.body as { username?: string; password?: string };
-
-  if (!username || !password) {
-    res.status(400).json({ message: "username and password are required." });
-    return;
+router.get("/me", (req, res, next) => {
+  try {
+    const user = requireBearer(req);
+    res.json({ sub: user.sub, preferred_language: env.authPreferredLanguage });
+  } catch (e) {
+    next(e);
   }
-
-  const normalizedUsername = username.trim().toLowerCase();
-  const result = await query<UserRow>(
-    `SELECT id, username, password_hash
-     FROM users
-     WHERE username = $1`,
-    [normalizedUsername]
-  );
-
-  const user = result.rows[0];
-  if (!user) {
-    res.status(401).json({ message: "Invalid credentials." });
-    return;
-  }
-
-  const passwordMatches = await bcrypt.compare(password, user.password_hash);
-  if (!passwordMatches) {
-    res.status(401).json({ message: "Invalid credentials." });
-    return;
-  }
-
-  const accessToken = signAccessToken({
-    sub: String(user.id),
-    username: user.username
-  });
-
-  res.json({
-    accessToken,
-    tokenType: "Bearer"
-  });
 });
 
-export default authRouter;
+router.post("/refresh", (req, res, next) => {
+  try {
+    const user = requireBearer(req);
+    const access_token = createAccessToken(user.sub);
+    res.json({
+      access_token,
+      token_type: "bearer",
+      expires_in: env.jwtExpireMinutes * 60
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+export default router;
