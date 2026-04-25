@@ -7,7 +7,7 @@ if (!process.env.DATABASE_URL) {
   throw new Error("Missing required environment variable: DATABASE_URL");
 }
 
-const sql = fs.readFileSync(path.resolve(__dirname, "../db/init.sql"), "utf8");
+const sql = fs.readFileSync(path.resolve(__dirname, "../db/schema.sql"), "utf8");
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 });
