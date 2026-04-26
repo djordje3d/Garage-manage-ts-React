@@ -87,7 +87,7 @@ export const env = {
   port: envInt("PORT", 4000),
   databaseUrl:
     process.env.DATABASE_URL?.trim() ||
-    "postgres://postgres:postgres@localhost:5432/garaza",
+    "postgres://postgres:postgres@localhost:5432/garagets",
   dbConnectTimeoutSeconds: envInt("DB_CONNECT_TIMEOUT", 5),
 
   apiKey: process.env.API_KEY?.trim() || null,
