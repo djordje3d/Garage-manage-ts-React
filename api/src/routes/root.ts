@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { query } from "../config/db";
 import { buildErrorPayload } from "../errors";
+import * as healthService from "../services/healthService";
 
 const router = Router();
 
@@ -10,8 +10,7 @@ router.get("/", (_req, res) => {
 
 router.get("/health", async (_req, res) => {
   try {
-    await query("SELECT 1");
-    res.json({ status: "ok", database: "connected" });
+    res.json(await healthService.checkHealth());
   } catch {
     res.status(503).json(
       buildErrorPayload("DATABASE_UNAVAILABLE", "Database unavailable.", null)
