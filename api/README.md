@@ -3,6 +3,18 @@
 This API is a TypeScript port of the Python backend in `D:\Vezbe\Python\APIPostgreSql\app`.
 Routes are mounted at root (`/health`, `/auth/login`, `/garages`, `/tickets`, ...).
 
+## Project layout
+
+Source code under `src/` is split into three layers:
+
+| Layer | Folder | Role |
+|-------|--------|------|
+| Routes | `routes/` | HTTP only: read `req`, call a service, send `res`, forward errors to middleware |
+| Services | `services/` | Business rules, validation, transactions, mapping rows to API shapes |
+| Repositories | `repositories/` | SQL and database access (no Express types) |
+
+Shared helpers live in `utils/` (pagination, query parsing, Postgres error codes). Domain examples: `routes/tickets.ts` → `services/ticketsQueryService.ts` + `services/tickets.ts` → `repositories/ticketsRepository.ts`.
+
 ## Setup
 
 1. Copy env file:
