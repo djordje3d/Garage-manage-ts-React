@@ -33,6 +33,18 @@ Shared helpers live in `utils/` (pagination, query parsing, Postgres error codes
 - After a successful init, `GET /health` should return `database: "connected"`.
 - For a database initialized only via this script, `alembic upgrade head` in the Python project should effectively no-op at the stamped revision.
 
+### Demo data (timeline / dashboard)
+
+`npm run db:seed-timeline` runs [`scripts/seed-timeline-demo.js`](scripts/seed-timeline-demo.js). It creates random vehicles and **closed** tickets over the last 30 days for `garage_id = 1` (plates prefixed with `BZ` for easy cleanup).
+
+**Before running:**
+
+1. `DATABASE_URL` in `.env` (same as the API).
+2. At least one row in `vehicle_types`.
+3. At least one active row in `parking_spot` for garage `1` (edit `GARAGE_ID` in the script if needed).
+
+Safe to re-run; it only inserts new rows (it does not truncate existing data).
+
 ## Authentication
 
 - If `API_KEY` is empty, requests are open.

@@ -21,6 +21,21 @@ function mapPayment(r: repo.PaymentRow): Payment {
   return { ...r, amount: parseFloat(r.amount) };
 }
 
+function parsePaymentAmount(v: unknown, field = "amount"): number {
+  if (v === undefined || v === null || v === "") {
+    throw new ApiError(422, "VALIDATION_ERROR", "Request validation failed.", {
+      fields: [{ field, message: "Amount is required." }]
+    });
+  }
+  const n = typeof v === "number" ? v : parseFloat(String(v));
+  if (!Number.isFinite(n) || n <= 0) {
+    throw new ApiError(422, "VALIDATION_ERROR", "Request validation failed.", {
+      fields: [{ field, message: "Amount must be a positive number." }]
+    });
+  }
+  return n;
+}
+
 export async function list(query: {
   limit?: unknown;
   offset?: unknown;
@@ -70,11 +85,12 @@ export async function getOutstanding(query: { garage_id?: unknown }) {
 
 export async function create(body: {
   ticket_id: number;
-  amount: number;
+  amount: unknown;
   method: string;
   currency?: string;
   paid_at?: string;
 }): Promise<Payment> {
+  const amount = parsePaymentAmount(body.amount);
   const created = await withTransaction(async (client) => {
     const t = await repo.findTicketForPayment(client, body.ticket_id);
     if (!t) throw new ApiError(404, "TICKET_NOT_FOUND", "Ticket not found.");
@@ -88,17 +104,17 @@ export async function create(body: {
     if (t.fee != null && parseFloat(t.fee) > 0) {
       const paid = await repo.sumPaymentsForTicket(client, body.ticket_id);
       const fee = parseFloat(t.fee);
-      if (paid + body.amount > fee) {
+      if (paid + amount > fee) {
         throw new ApiError(409, "OVERPAYMENT_NOT_ALLOWED", "Payment amount exceeds the remaining balance.", {
           ticket_id: body.ticket_id,
           remaining_balance: fee - paid,
-          attempted_amount: body.amount
+          attempted_amount: amount
         });
       }
     }
     const row = await repo.insertPayment(client, {
       ticket_id: body.ticket_id,
-      amount: body.amount,
+      amount,
       method: body.method,
       currency: body.currency ?? "RSD",
       paid_at: body.paid_at ?? null
@@ -111,13 +127,14 @@ export async function create(body: {
 
 export async function update(
   id: number,
-  body: { amount: number; method: string; currency?: string; paid_at?: string }
+  body: { amount: unknown; method: string; currency?: string; paid_at?: string }
 ): Promise<Payment> {
+  const amount = parsePaymentAmount(body.amount);
   const updated = await withTransaction(async (client) => {
     const ticketId = await repo.findPaymentTicketId(client, id);
     if (ticketId == null) throw new ApiError(404, "PAYMENT_NOT_FOUND", "Payment not found.");
     const row = await repo.updatePayment(client, id, {
-      amount: body.amount,
+      amount,
       method: body.method,
       currency: body.currency ?? "RSD",
       paid_at: body.paid_at ?? null
