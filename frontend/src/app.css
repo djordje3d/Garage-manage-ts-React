@@ -1,0 +1,105 @@
+/* Ported from Vue dashboard src/App.vue <style scoped> */
+
+/* Connection banner (offline / API down) */
+.connection-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem 0.75rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.connection-banner__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.connection-banner__content {
+  flex: 1;
+  min-width: 0;
+}
+.connection-banner__title {
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.connection-banner__detail {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  opacity: 0.95;
+}
+.connection-banner--offline {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #e2e8f0;
+}
+.connection-banner--offline .connection-banner__detail {
+  color: #94a3b8;
+}
+.connection-banner--timeout {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  color: #eff6ff;
+}
+.connection-banner--timeout .connection-banner__detail {
+  color: #bfdbfe;
+}
+.connection-banner--api-down {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 100%);
+  color: #1c1917;
+}
+.connection-banner--api-down .connection-banner__detail {
+  color: rgba(28, 25, 23, 0.9);
+}
+
+/* Connection restored toast (top center) */
+.connection-restored-toast {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: #065f46;
+  color: #ecfdf5;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+.connection-restored-toast__icon {
+  font-size: 1rem;
+  color: #6ee7b7;
+}
+
+/* Session idle / expired overlays */
+.session-expiry-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  pointer-events: auto;
+}
+.session-expiry-modal {
+  pointer-events: auto;
+  max-width: 24rem;
+  padding: 1.5rem;
+  background: rgb(245 158 11);
+  color: rgb(30 27 75);
+  border-radius: 0.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+.session-expired-modal {
+  pointer-events: auto;
+  max-width: 24rem;
+  padding: 1.5rem;
+  background: rgb(51 65 85);
+  color: rgb(248 250 252);
+  border-radius: 0.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}

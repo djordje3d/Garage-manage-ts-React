@@ -43,7 +43,9 @@ src/
 
 ## Environment
 
-| Variable | Default |
-|----------|---------|
-| `VITE_API_URL` | `http://localhost:4000` |
-| `VITE_API_KEY` | (optional) |
+| Variable | Typical dev value |
+|----------|-------------------|
+| `VITE_API_URL` | `/api` (Vite proxy to port 4000) or `http://localhost:4000` |
+| `VITE_API_KEY` | Same as `API_KEY` in `api/.env` if the API requires it before login |
+
+Restart `npm run dev` after changing `.env`.
