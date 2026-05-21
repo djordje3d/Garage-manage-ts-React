@@ -1,0 +1,312 @@
+{
+  "language": {
+    "en": "English",
+    "sr": "Serbian"
+  },
+  "header": {
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "newVehicleEntry": "New Vehicle Entry"
+  },
+  "connection": {
+    "restored": "Connection restored",
+    "offline": {
+      "title": "You're offline",
+      "detail": "Check your network connection."
+    },
+    "timeout": {
+      "title": "Request timed out – slow connection?",
+      "detail": "The request took too long. Check your connection or try again."
+    },
+    "apiDown": {
+      "title": "Cannot connect to API",
+      "detail": "API at {baseURL} is unreachable. Start the backend: python -m app.run"
+    }
+  },
+  "session": {
+    "idle": {
+      "title": "Your session will expire in {countdown}. You will be logged out automatically.",
+      "detail": "Click the button below to continue your session.",
+      "continue": "Continue session"
+    },
+    "expired": {
+      "title": "Your session has expired.",
+      "detail": "You will be redirected to the login page in {countdown}.",
+      "goToLogin": "Go to login now"
+    }
+  },
+  "toast": {
+    "vehicleCreated": "Vehicle entry created."
+  },
+  "login": {
+    "title": "Dashboard Login",
+    "username": "Username",
+    "password": "Password",
+    "signIn": "Sign in",
+    "sessionExpired": "You were logged out because your session expired. Please sign in again."
+  },
+  "entry": {
+    "licencePlate": "Licence plate *",
+    "vehicleType": "Vehicle type *",
+    "selectType": "Select type",
+    "garage": "Garage *",
+    "selectGarage": "Select garage",
+    "spot": "Spot (optional, auto if empty)",
+    "spotAutoAssign": "Auto-assign first free",
+    "ticketImage": "Ticket image",
+    "chooseFile": "Choose file",
+    "noFileChosen": "No file chosen",
+    "imageProcessing": "Resizing image…",
+    "imageReady": "{name} — ready to upload",
+    "imageResizeFailed": "Could not process the image. Try another file.",
+    "clearImage": "Clear image",
+    "cancel": "Cancel",
+    "createEntry": "Create entry",
+    "createFailed": "Could not create entry."
+  },
+  "payment": {
+    "ticket": "Karta",
+    "amount": "Amount",
+    "method": "Metoda",
+    "selectMethod": "Select method",
+    "totalFee": "Total fee",
+    "restToPay": "Rest to pay",
+    "payment": "Payment",
+    "cash": "Cash",
+    "card": "Card",
+    "amountMustBePositive": "Amount must be positive",
+    "amountExceedsRemainingBalance": "Amount exceeds remaining balance. Remaining balance: {amount}",
+    "paymentFailed": "Payment failed",
+    "when": "Payment when",
+    "totalPaid": "Total paid",
+    "paymentMethod": "Payment method",
+    "cancel": "Cancel",
+    "submitPayment": "Submit payment"
+  },
+  "ticket": {
+    "ticket": "Ticket",
+    "ticketActivity": "Ticket activity",
+    "Last 10": "Last 10 tickets",
+    "id": "ID",
+    "entryTime": "Entry time",
+    "exitTime": "Exit time",
+    "spot": "Spot",
+    "plate": "Plate",
+    "state": "State",
+    "payment": "Payment",
+    "fee": "Fee",
+    "close": "Close",
+    "goToPayment": "Go to payment",
+    "totalPaid": "Total paid",
+    "noTickets": "No tickets",
+    "image": "Image",
+    "garage": "Garage",
+    "ticketId": "Ticket #",
+    "actions": "Actions",
+    "noPaymentsRecorded": "No payments recorded",
+    "loading": "Loading...",
+    "allPaymentsForThisTicket": "All payments for this ticket (amount and when paid)",
+    "evidenceOfPayments": "Evidence of payments",
+    "restToPay": "Rest",
+    "paymentWhen": "Payment when",
+    "paymentMethod": "Payment method",
+    "barcode": "Barcode",
+    "ticketState": {
+      "OPEN": "Open",
+      "CLOSED": "Closed"
+    },
+    "paymentStatus": {
+      "NOT_APPLICABLE": "N/A",
+      "UNPAID": "Unpaid",
+      "PARTIALLY_PAID": "Partially paid",
+      "PAID": "Paid"
+    }
+  },
+  "garageOverview": {
+    "title": "Garage overview",
+    "noData": "No data",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "retryBtn": "Retry again",
+    "spots": "Spots",
+    "free": "Free",
+    "occupied": "Occupied",
+    "rentable": "Rentable",
+    "total": "Total",
+    "garage": "Garage",
+    "garageId": "Garage ID",
+    "garageName": "Garage name",
+    "garageTotalSpots": "Total spots"
+  },
+  "paymentsRevenue": {
+    "title": "Payments and revenue",
+    "noData": "No data",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "retryBtn": "Retry again",
+    "todayRevenue": "Today's revenue",
+    "thisMonthRevenue": "This month's revenue",
+    "unpaidPartiallyPaidTickets": "Unpaid / partially paid tickets",
+    "restToPay": "Rest to pay",
+    "restToPayDescription": "Rest to pay (for fully paid tickets)",
+    "totalPaid": "Total paid"
+  },
+  "statusCards": {
+    "title": "Garage status",
+    "freeSpots": "Free spots",
+    "occupiedSpots": "Occupied spots",
+    "inactiveSpots": "Inactive spots",
+    "openTickets": "Open tickets"
+  },
+  "garageSelectDropdown": {
+    "title": "View garage status and activity",
+    "allGarages": "All garages",
+    "selectGarage": "Select garage",
+    "viewGarageDetail": "View garage details (spots and vehicles)",
+    "clickToOpenGarageDetail": "Click to open garage details (spots and vehicles)"
+  },
+  "languageSwitcher": {
+    "title": "Language",
+    "selectLanguage": "Select language"
+  },
+  "garageDetail": {
+    "dashboard": "Dashboard",
+    "id": "ID",
+    "entryTime": "Entry time",
+    "spot": "Spot",
+    "plate": "Plate",
+    "title": "Garage details",
+    "capacity": "Capacity",
+    "defaultRate": "Default rate",
+    "spots": "Spots",
+    "yes": "Yes",
+    "no": "No",
+    "vehicles": "Vehicles",
+    "openTickets": "Open tickets",
+    "closedTickets": "Closed tickets",
+    "spotOccupancy": "Occupancy",
+    "spotFree": "Free",
+    "spotOccupied": "Occupied",
+    "rentableSpots": "Rentable spots",
+    "activeSpots": "Active spots",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "page": "Page",
+    "of": "of",
+    "pageSize": "Page size",
+    "total": "Total",
+    "pageSizeOptions": "Page size options",
+    "pageSizeOptionsLabel": "Page size options",
+    "pageSizeOptionsPlaceholder": "Page size options",
+    "pageSizeOptionsValue": "Page size options",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "retryBtn": "Retry again",
+    "noData": "No data",
+    "noSpots": "No spots",
+    "noVehicles": "No vehicles",
+    "noOpenTickets": "No open tickets",
+    "noClosedTickets": "No closed tickets",
+    "noRentableSpots": "No rentable spots",
+    "noActiveSpots": "No active spots",
+    "garage": "Garage",
+    "garageNotFound": "Garage not found.",
+    "invalidGarageId": "Invalid garage id.",
+    "refreshNow": "Refresh now",
+    "loadFailed": "Could not load garage.",
+    "viewTicketImage": "View image",
+    "noTicketImage": "No image",
+    "liveOverview": "Live overview"
+  },
+  "common": {
+    "from": "From",
+    "to": "To",
+    "refreshing": "Refreshing...",
+    "ready": "Ready"
+  },
+  "garageHeaderCard": {
+    "title": "Configuration",
+    "status": "Status",
+    "operational": "Operational"
+  },
+  "timeline": {
+    "title": "Timeline",
+    "yAxisMetric": "Y-axis metric",
+    "loadFailed": "Failed to load timeline data.",
+    "loading": "Loading timeline...",
+    "noDataForPeriod": "No timeline data for selected period.",
+    "zoomRange": "Zoom range",
+    "entriesPerDay": "Entries per day",
+    "exitsPerDay": "Exits per day",
+    "zoomStartDay": "Zoom start day",
+    "zoomEndDay": "Zoom end day",
+    "vehicleSeriesFilter": "Vehicle types (lines)"
+  },
+  "dashboard": {
+    "tabOverview": "Overview",
+    "tabTickets": "Tickets",
+    "tabTimeline": "Timeline",
+    "timeFrame": "Time Frame",
+    "timeFrameRealtime": "Real time (last 5 days)",
+    "timeFrameLast7": "Last 7 days",
+    "timeFrameLast30": "Last 30 days",
+    "timeFrameLast90": "Last 90 days"
+  },
+  "vehicleType": {
+    "putnicko": "Car",
+    "teretno": "Truck",
+    "motor": "Motorcycle",
+    "moped": "Moped",
+    "mini_bus": "Minibus",
+    "bicikla": "Bicycle",
+    "kombi": "Van",
+    "bus": "Bus",
+    "karavan": "Estate",
+    "suv": "SUV",
+    "other": "Other"
+  },
+  "garageSpots": {
+    "subtitle": "Overview of active and rentable parking spots.",
+    "loadFailed": "Failed to load spots.",
+    "totalCount": "{count} total"
+  },
+  "help": {
+    "statusCards": {
+      "freeSpots": "Parking spots that are active, rentable, and not occupied.",
+      "occupiedSpots": "Spots that currently have a vehicle (open ticket).",
+      "inactiveSpots": "Spots that are not active or not available for parking.",
+      "openTickets": "Vehicles still inside: tickets that are not closed yet."
+    },
+    "autoRefresh": "When on, the dashboard reloads data on a timer. Click the ring to turn auto-refresh on or off; the number is seconds until the next refresh.",
+    "autoRefreshAriaOn": "Auto-refresh on. Click to pause automatic updates.",
+    "autoRefreshAriaOff": "Auto-refresh off. Click to resume automatic updates.",
+    "dashboard": {
+      "timeFrame": "Limits ticket list and timeline to this date range. “Real time” uses the last few days; other options load a longer window."
+    },
+    "timeline": {
+      "yAxis": "Choose whether each day counts vehicle entries or exits. The chart and brush use the same metric.",
+      "zoomRange": "Drag the blue window or its edges on the mini-chart to focus on part of the period. The main chart shows only the selected days.",
+      "series": "Toggle vehicle types to show or hide their lines on the chart."
+    },
+    "ticket": {
+      "ticketState": "Open means the vehicle is still in the garage. Closed means exit was recorded; payment may still be due.",
+      "paymentStatus": "Whether the parking fee is fully paid, partially paid, not paid, or not applicable (e.g. open ticket).",
+      "fee": "Total parking fee calculated when the ticket was closed (tariff rules).",
+      "restToPay": "Amount still owed after payments. Shown as “–” while the ticket is open, and “0” when fully paid."
+    },
+    "aria": {
+      "statusCard": "Help: {topic}",
+      "timeFrame": "Help: time frame filter",
+      "timelineYAxis": "Help: timeline Y-axis metric",
+      "timelineZoom": "Help: timeline zoom range",
+      "timelineSeries": "Help: vehicle type lines on chart",
+      "ticketState": "Help: ticket state column",
+      "paymentStatus": "Help: payment status column",
+      "ticketFee": "Help: fee column",
+      "restToPay": "Help: rest to pay column"
+    }
+  }
+}

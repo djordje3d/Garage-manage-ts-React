@@ -1,0 +1,18 @@
+@reference "../index.css";
+
+/* Consistent spacing between dashboard sections (used in DashboardView and GarageDetailView) */
+@layer components {
+  :root {
+    --dashboard-section-gap: 1.5rem;
+  }
+  .dashboard-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dashboard-section-gap);
+  }
+
+  /* Shared panel shell (matches RevenueSummary root: radius, bg, shadow, ring) */
+  .dashboard-card {
+    @apply rounded-lg bg-white shadow ring-1 ring-gray-200;
+  }
+}

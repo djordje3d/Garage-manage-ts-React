@@ -1,0 +1,104 @@
+/* Ported from Vue SFC scoped styles */
+
+.btn-in {
+  position: relative;
+}
+
+.input-in-wrap {
+  min-width: 0;
+}
+
+.image-in-wrap {
+  min-width: 0;
+}
+
+/* Modal fade (Modal.vue) */
+.modal-fade-enter-active.modal-backdrop {
+  transition: opacity 0.3s ease-out;
+}
+.modal-fade-leave-active.modal-backdrop {
+  transition: opacity 0.3s ease-in;
+  transition-delay: 0.1s;
+}
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-active .modal-dialog {
+  transition: opacity 0.25s ease-out 0.07s;
+}
+.modal-fade-leave-active .modal-dialog {
+  transition: opacity 0.2s ease-in 0s;
+}
+.modal-fade-enter-from .modal-dialog,
+.modal-fade-leave-to .modal-dialog {
+  opacity: 0;
+}
+
+/* StandardDropdown pop */
+.pop-enter-active,
+.pop-leave-active {
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.pop-enter-from,
+.pop-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.pop-enter-to,
+.pop-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Toast.vue */
+.toast-snackbar {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 10001;
+  padding: 0.75rem 1.25rem;
+  background: #065f46;
+  color: #ecfdf5;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  max-width: min(22rem, calc(100vw - 2.5rem));
+}
+
+/* GlowButton.vue */
+.glow-btn {
+  position: relative;
+}
+
+.shimmer-layer {
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.35) 55%,
+    transparent 100%
+  );
+  transform: translateX(-120%);
+  animation: shimmer 3.5s ease-in-out infinite;
+  opacity: 0.35;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  60% {
+    transform: translateX(120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}

@@ -1,0 +1,315 @@
+{
+  "language": {
+    "en": "Engleski",
+    "sr": "Srpski"
+  },
+  "header": {
+    "dashboard": "Kontrolna tabla",
+    "logout": "Odjava",
+    "newVehicleEntry": "Novi ulaz vozila"
+  },
+  "connection": {
+    "restored": "Veza je uspostavljena",
+    "offline": {
+      "title": "Niste povezani na internet",
+      "detail": "Proverite internet vezu."
+    },
+    "timeout": {
+      "title": "Zahtev je istekao – spora veza?",
+      "detail": "Zahtev je trajao predugo. Proverite vezu ili pokušajte ponovo."
+    },
+    "apiDown": {
+      "title": "Nije moguće povezati se sa API-jem",
+      "detail": "API na adresi {baseURL} nije dostupan. Pokrenite backend: python -m app.run"
+    }
+  },
+  "session": {
+    "idle": {
+      "title": "Sesija će isteći za {countdown}. Bićete automatski odjavljeni.",
+      "detail": "Kliknite na dugme ispod da nastavite sesiju.",
+      "continue": "Nastavi sesiju"
+    },
+    "expired": {
+      "title": "Sesija je istekla.",
+      "detail": "Bićete preusmereni na stranicu za prijavu za {countdown}.",
+      "goToLogin": "Idi na prijavu sada"
+    }
+  },
+  "toast": {
+    "vehicleCreated": "Ulaz vozila je evidentiran."
+  },
+  "login": {
+    "title": "Prijava na kontrolnu tablu",
+    "username": "Korisničko ime",
+    "password": "Lozinka",
+    "signIn": "Prijavi se",
+    "sessionExpired": "Odjavljeni ste zato što je sesija istekla. Molimo prijavite se ponovo."
+  },
+  "entry": {
+    "licencePlate": "Registracija *",
+    "vehicleType": "Tip vozila *",
+    "selectType": "Izaberi tip",
+    "garage": "Garaža *",
+    "selectGarage": "Izaberi garažu",
+    "spot": "Mesto (opciono, automatski ako je prazno)",
+    "spotAutoAssign": "Automatski dodeli prvo slobodno",
+    "ticketImage": "Slika tiketa",
+    "chooseFile": "Izaberi fajl",
+    "noFileChosen": "Nije izabran nijedan fajl",
+    "imageProcessing": "Smanjivanje slike…",
+    "imageReady": "{name} — spremno za slanje",
+    "imageResizeFailed": "Obrada slike nije uspela. Probajte drugi fajl.",
+    "clearImage": "Ukloni sliku",
+    "cancel": "Otkaži",
+    "createEntry": "Kreiraj ulaz",
+    "createFailed": "Kreiranje ulaza nije uspelo."
+  },
+  "payment": {
+    "ticket": "Tiket",
+    "amount": "Iznos",
+    "method": "Metoda",
+    "selectMethod": "Izaberi metodu",
+    "totalFee": "Ukupna cena",
+    "restToPay": "Ostatak za plaćanje",
+    "payment": "Plaćanje",
+    "cash": "Gotovina",
+    "card": "Kartica",
+    "amountMustBePositive": "Iznos mora biti pozitivan",
+    "amountExceedsRemainingBalance": "Iznos prelazi ostatak na računu. Ostatak: {amount}",
+    "paymentFailed": "Plaćanje nije uspelo",
+    "when": "Vreme plaćanja",
+    "totalPaid": "Ukupno plaćeno",
+    "paymentMethod": "Metoda plaćanja",
+    "cancel": "Otkaži",
+    "submitPayment": "Plati"
+  },
+  "ticket": {
+    "ticket": "Tiket",
+    "ticketActivity": "Aktivnost tiketa",
+    "Last 10": "poslednji tiketi",
+    "id": "ID",
+    "entryTime": "Vreme ulaska",
+    "exitTime": "Vreme izlaska",
+    "spot": "Mesto",
+    "plate": "Tablica",
+    "state": "Stanje",
+    "payment": "Plaćanje",
+    "fee": "Cena",
+    "close": "Zatvori",
+    "goToPayment": "Idi na plaćanje",
+    "totalPaid": "Ukupno plaćeno",
+    "noTickets": "Nema tiketa",
+    "image": "Slika",
+    "garage": "Garaža",
+    "ticketId": "Tiket #",
+    "actions": "Akcije",
+    "noPaymentsRecorded": "Nema plaćanja",
+    "loading": "Učitavanje...",
+    "allPaymentsForThisTicket": "Sve plaćanja za ovaj tiket (iznos i kada je plaćeno)",
+    "evidenceOfPayments": "Dokaz o plaćanjima",
+    "restToPay": "Ostatak",
+    "paymentWhen": "Vreme plaćanja",
+    "paymentMethod": "Metoda plaćanja",
+    "barcode": "Barkod",
+    "ticketState": {
+      "OPEN": "Otvoreno",
+      "CLOSED": "Zatvoreno"
+    },
+    "paymentStatus": {
+      "NOT_APPLICABLE": "Nije primenjivo",
+      "UNPAID": "Neplaćeno",
+      "PARTIALLY_PAID": "Delimično",
+      "PAID": "Plaćeno"
+    }
+  },
+  "garageOverview": {
+    "title": "Pregled garaža",
+    "noData": "Nema podataka",
+    "loading": "Učitavanje...",
+    "error": "Greška",
+    "retry": "Pokušaj ponovo",
+    "retryBtn": "Pokušaj ponovo",
+    "spots": "Mesta",
+    "free": "Slobodna",
+    "occupied": "Zauzeta",
+    "rentable": "Za izdavanje",
+    "total": "Ukupno",
+    "garage": "Garaža",
+    "garageId": "ID garaže",
+    "garageName": "Naziv garaže",
+    "garageTotalSpots": "Ukupno mesta",
+    "garageFreeSpots": "Slobodna mesta",
+    "garageOccupiedSpots": "Zauzeta mesta",
+    "garageRentableSpots": "Mesta za izdavanje"
+  },
+  "paymentsRevenue": {
+    "title": "Plaćanja i prihod",
+    "noData": "Nema podataka",
+    "loading": "Učitavanje...",
+    "error": "Greška",
+    "retry": "Pokušaj ponovo",
+    "retryBtn": "Pokušaj ponovo",
+    "todayRevenue": "Prihod danas",
+    "thisMonthRevenue": "Prihod ovog meseca",
+    "unpaidPartiallyPaidTickets": "Neplaćeni / delimično plaćeni tiketi",
+    "restToPay": "Ostatak za plaćanje",
+    "restToPayDescription": "Ostatak za plaćanje",
+    "totalPaid": "Ukupno plaćeno"
+  },
+  "statusCards": {
+    "title": "Status garaža",
+    "freeSpots": "Slobodna mesta",
+    "occupiedSpots": "Zauzeta mesta",
+    "inactiveSpots": "Neaktivna mesta",
+    "openTickets": "Otvoreni tiketi"
+  },
+  "garageSelectDropdown": {
+    "title": "Pogledaj status i aktivnost po garaži",
+    "allGarages": "Sve garaže",
+    "selectGarage": "Izaberi garažu",
+    "viewGarageDetail": "Pogledaj detalje garaže (mesta i vozila)",
+    "clickToOpenGarageDetail": "Kliknite da otvorite detalje garaže (mesta i vozila)"
+  },
+  "languageSwitcher": {
+    "title": "Jezik",
+    "selectLanguage": "Izaberi jezik"
+  },
+  "garageDetail": {
+    "dashboard": "Kontrolna tabla",
+    "id": "ID",
+    "entryTime": "Vreme ulaska",
+    "spot": "Mesto",
+    "plate": "Registracija",
+    "title": "Detalji garaže",
+    "capacity": "Kapacitet",
+    "defaultRate": "Standardna cena",
+    "spots": "Mesta",
+    "yes": "Da",
+    "no": "Ne",
+    "vehicles": "Vozila",
+    "openTickets": "Otvoreni tiketi",
+    "closedTickets": "Zatvoreni tiketi",
+    "spotOccupancy": "Zauzetost",
+    "spotFree": "Slobodno",
+    "spotOccupied": "Zauzeto",
+    "rentableSpots": "Mesta za izdavanje",
+    "activeSpots": "Aktivna mesta",
+    "previousPage": "Prethodna",
+    "nextPage": "Sledeća",
+    "page": "Strana",
+    "of": "od",
+    "pageSize": "Broj strana",
+    "total": "Ukupno",
+    "pageSizeOptions": "Broj strana",
+    "pageSizeOptionsLabel": "Broj strana",
+    "pageSizeOptionsPlaceholder": "Broj strana",
+    "pageSizeOptionsValue": "Broj strana",
+    "loading": "Učitavanje...",
+    "error": "Greška",
+    "retry": "Pokušaj ponovo",
+    "retryBtn": "Pokušaj ponovo",
+    "noData": "Nema podataka",
+    "noSpots": "Nema mesta",
+    "noVehicles": "Nema vozila",
+    "noOpenTickets": "Nema otvorenih tiketa",
+    "noClosedTickets": "Nema zatvorenih tiketa",
+    "noRentableSpots": "Nema mesta za izdavanje",
+    "noActiveSpots": "Nema aktivnih mesta",
+    "garage": "Garaža",
+    "garageNotFound": "Garaža nije pronađena.",
+    "invalidGarageId": "Nevažeći ID garaže.",
+    "refreshNow": "Osveži sada",
+    "loadFailed": "Učitavanje garaže nije uspelo.",
+    "viewTicketImage": "Pogledaj sliku",
+    "noTicketImage": "Nema slike",
+    "liveOverview": "Pregled uživo"
+  },
+  "common": {
+    "from": "Od",
+    "to": "Do",
+    "refreshing": "Osvežavanje…",
+    "ready": "Spremno"
+  },
+  "garageHeaderCard": {
+    "title": "Konfiguracija",
+    "status": "Status",
+    "operational": "U radu"
+  },
+  "timeline": {
+    "title": "Vremenska linija",
+    "yAxisMetric": "Metrika na Y osi",
+    "loadFailed": "Učitavanje podataka za vremensku liniju nije uspelo.",
+    "loading": "Učitavanje vremenske linije…",
+    "noDataForPeriod": "Nema podataka za izabrani period.",
+    "zoomRange": "Opseg zumiranja",
+    "entriesPerDay": "Ulazi po danu",
+    "exitsPerDay": "Izlazi po danu",
+    "zoomStartDay": "Početak zumiranja (dan)",
+    "zoomEndDay": "Kraj zumiranja (dan)",
+    "vehicleSeriesFilter": "Tipovi vozila (linije)"
+  },
+  "dashboard": {
+    "tabOverview": "Pregled",
+    "tabTickets": "Tiketi",
+    "tabTimeline": "Vremenska linija",
+    "timeFrame": "Vremenski okvir",
+    "timeFrameRealtime": "Uživo (poslednjih 5 dana)",
+    "timeFrameLast7": "Poslednjih 7 dana",
+    "timeFrameLast30": "Poslednjih 30 dana",
+    "timeFrameLast90": "Poslednjih 90 dana"
+  },
+  "vehicleType": {
+    "putnicko": "Automobil",
+    "teretno": "Kamion",
+    "motor": "Motocikl",
+    "moped": "Moped",
+    "mini_bus": "Minibus",
+    "bicikla": "Bicikl",
+    "bus": "Autobus",
+    "karavan": "Karavan",
+    "kombi": "Kombi",
+    "suv": "SUV",
+    "other": "Drugo"
+  },
+  "garageSpots": {
+    "subtitle": "Pregled aktivnih parking mesta i mesta za izdavanje.",
+    "loadFailed": "Učitavanje mesta nije uspelo.",
+    "totalCount": "{count} ukupno"
+  },
+  "help": {
+    "statusCards": {
+      "freeSpots": "Parking mesta koja su aktivna, dostupna za izdavanje i trenutno nisu zauzeta.",
+      "occupiedSpots": "Parking mesta koja su trenutno zauzeta vozilima sa otvorenim tiketom.",
+      "inactiveSpots": "Parking mesta koja su isključena iz upotrebe ili trenutno nisu dostupna za dodelu.",
+      "openTickets": "Broj vozila koja su još u garaži, odnosno broj tiketa koji još nisu zatvoreni."
+    },
+    "autoRefresh": "Automatski osvežava dashboard. Broj prikazuje vreme do sledećeg osvežavanja, a klik uključuje ili pauzira osvežavanje.",
+    "autoRefreshAriaOn": "Automatsko osvežavanje je uključeno. Kliknite da ga pauzirate.",
+    "autoRefreshAriaOff": "Automatsko osvežavanje je isključeno. Kliknite da ga ponovo uključite.",
+    "dashboard": {
+      "timeFrame": "Ograničava prikaz podataka na izabrani vremenski period. Opcija „Uživo“ prikazuje najnovije dane."
+    },
+    "timeline": {
+      "yAxis": "Bira da li grafikon prikazuje broj ulazaka ili izlazaka vozila po danu.",
+      "zoomRange": "Prevucite plavi okvir na donjem grafiku da fokusirate deo perioda. Glavni grafikon prikazuje samo izabrani opseg.",
+      "series": "Uključite ili isključite pojedine tipove vozila da biste prikazali ili sakrili njihove linije na grafikonu."
+    },
+    "ticket": {
+      "ticketState": "Otvoren znači da je vozilo još u garaži. Zatvoren znači da je izlaz zabeležen, ali tiket i dalje može biti neplaćen.",
+      "paymentStatus": "Pokazuje da li je tiket plaćen, delimično plaćen, neplaćen ili nije primenjivo.",
+      "fee": "Ukupna cena parkinga obračunata prilikom zatvaranja tiketa, prema važećim tarifnim pravilima.",
+      "restToPay": "Iznos koji je još potrebno platiti. Prikazuje se „–“ za otvoren tiket, a „0“ kada je sve plaćeno."
+    },
+    "aria": {
+      "statusCard": "Pomoć: {topic}",
+      "timeFrame": "Pomoć: vremenski period",
+      "timelineYAxis": "Pomoć: metrika na Y osi",
+      "timelineZoom": "Pomoć: opseg zumiranja",
+      "timelineSeries": "Pomoć: linije po tipu vozila",
+      "ticketState": "Pomoć: kolona stanja tiketa",
+      "paymentStatus": "Pomoć: kolona statusa plaćanja",
+      "ticketFee": "Pomoć: kolona cene",
+      "restToPay": "Pomoć: kolona preostalog iznosa za plaćanje"
+    }
+  }
+}
