@@ -97,6 +97,7 @@ export default function DashboardView() {
   const rangeRef = useRef(buildDateRange(selectedTimeFrame))
   const timelinePointsLengthRef = useRef(0)
   const timelineRowsLengthRef = useRef(0)
+  const timelineZoomStartRef = useRef(0)
   const timelineZoomEndRef = useRef(0)
 
   useEffect(() => {
@@ -151,6 +152,10 @@ export default function DashboardView() {
   }, [timelineRows.length])
 
   useEffect(() => {
+    timelineZoomStartRef.current = timelineZoomStart
+  }, [timelineZoomStart])
+
+  useEffect(() => {
     timelineZoomEndRef.current = timelineZoomEnd
   }, [timelineZoomEnd])
 
@@ -198,13 +203,14 @@ export default function DashboardView() {
 
   useEffect(() => {
     const maxIdx = Math.max(timelinePoints.length - 1, 0)
-    setTimelineZoomStart((s) => Math.min(s, maxIdx))
-    setTimelineZoomEnd((e) => {
-      const next = Math.min(Math.max(e, 0), maxIdx)
-      if (timelineHasLoadedOnce && next === 0 && maxIdx > 0) return maxIdx
-      return next
-    })
-  }, [timelinePoints, timelineHasLoadedOnce])
+    const nextStart = Math.min(timelineZoomStartRef.current, maxIdx)
+    let nextEnd = Math.min(Math.max(timelineZoomEndRef.current, nextStart), maxIdx)
+    if (timelineHasLoadedOnceRef.current && nextEnd === 0 && maxIdx > 0) {
+      nextEnd = maxIdx
+    }
+    setTimelineZoomStart(nextStart)
+    setTimelineZoomEnd(nextEnd)
+  }, [timelinePoints])
 
   useEffect(() => {
     if (garageIdParam !== undefined && garageIdParam !== '') {
@@ -415,8 +421,10 @@ export default function DashboardView() {
 
   useEffect(() => {
     const maxIdx = Math.max(timelinePoints.length - 1, 0)
-    setTimelineZoomStart((s) => Math.min(s, maxIdx))
-    setTimelineZoomEnd((e) => Math.min(Math.max(e, 0), maxIdx))
+    const nextStart = Math.min(timelineZoomStartRef.current, maxIdx)
+    const nextEnd = Math.min(Math.max(timelineZoomEndRef.current, nextStart), maxIdx)
+    setTimelineZoomStart(nextStart)
+    setTimelineZoomEnd(nextEnd)
   }, [timelineYAxisMode, timelinePoints.length])
 
   return (

@@ -134,7 +134,10 @@ function useTimelineMainChartState(params: {
   }, [hoverX])
 
   const toggleSeries = useCallback((id: string) => {
-    setVisibleSeries((prev) => ({ ...prev, [id]: prev[id] === false }))
+    setVisibleSeries((prev) => {
+      const current = prev[id] !== false
+      return { ...prev, [id]: !current }
+    })
   }, [])
 
   const clearHover = useCallback(() => {
