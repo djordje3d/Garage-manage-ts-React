@@ -8,6 +8,59 @@
   min-width: 0;
 }
 
+.modal-body {
+  width: 100%;
+  min-width: 0;
+}
+
+/* New vehicle entry modal — match Vue dashboard form */
+.entry-form label {
+  color: #334155; /* slate-700 */
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.entry-form .input-in {
+  border-color: #ced4da;
+  background-color: #fff;
+  color: #111827;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+}
+
+.entry-form .input-in::placeholder {
+  color: #9ca3af;
+}
+
+.entry-form .input-in:focus {
+  border-color: #10b981;
+  outline: none;
+  box-shadow: 0 0 0 1px #10b981;
+}
+
+.entry-form .standard-dropdown > label {
+  color: #4b5563; /* gray-600 */
+}
+
+.entry-form #chooseFileBtn {
+  flex-shrink: 0;
+}
+
+.entry-form #createEntryBtn:not(:disabled) {
+  background-color: #059669; /* emerald-600 */
+}
+
+.entry-form #createEntryBtn:not(:disabled):hover {
+  background-color: #047857; /* emerald-700 */
+}
+
+.entry-form #createEntryBtn:disabled {
+  background-color: #6ee7b7; /* emerald-300 — muted mint while incomplete */
+  opacity: 1;
+  color: #fff;
+  cursor: not-allowed;
+}
+
 .image-in-wrap {
   min-width: 0;
 }

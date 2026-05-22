@@ -30,7 +30,7 @@ import { useToast } from '../composables/useToast'
 import './dashboard-views.css'
 import '../components/dashboard/dashboard-components.css'
 
-const WIDGET_FETCH_TIMEOUT_MS = 45_000
+const WIDGET_FETCH_TIMEOUT_MS = 15_000
 
 function formatIsoDate(d: Date): string {
   const year = d.getFullYear()
@@ -89,7 +89,27 @@ export default function DashboardView() {
   const refreshEpoch = useRef(0)
   const refreshDepth = useRef(0)
   const refreshInProgress = useRef(false)
-  const { abortSignal, prepareRefreshCycle } = useDashboardRefreshState()
+  const { getAbortSignal, prepareRefreshCycle } = useDashboardRefreshState()
+
+  const analyticsHasLoadedOnceRef = useRef(false)
+  const timelineHasLoadedOnceRef = useRef(false)
+  const selectedGarageIdRef = useRef(selectedGarageId)
+  const rangeRef = useRef(buildDateRange(selectedTimeFrame))
+  const timelinePointsLengthRef = useRef(0)
+  const timelineRowsLengthRef = useRef(0)
+  const timelineZoomEndRef = useRef(0)
+
+  useEffect(() => {
+    analyticsHasLoadedOnceRef.current = analyticsHasLoadedOnce
+  }, [analyticsHasLoadedOnce])
+
+  useEffect(() => {
+    timelineHasLoadedOnceRef.current = timelineHasLoadedOnce
+  }, [timelineHasLoadedOnce])
+
+  useEffect(() => {
+    selectedGarageIdRef.current = selectedGarageId
+  }, [selectedGarageId])
 
   const timeFrameOptions = useMemo(
     () => [
@@ -117,6 +137,22 @@ export default function DashboardView() {
     }
     return points
   }, [range])
+
+  useEffect(() => {
+    rangeRef.current = range
+  }, [range])
+
+  useEffect(() => {
+    timelinePointsLengthRef.current = timelinePoints.length
+  }, [timelinePoints.length])
+
+  useEffect(() => {
+    timelineRowsLengthRef.current = timelineRows.length
+  }, [timelineRows.length])
+
+  useEffect(() => {
+    timelineZoomEndRef.current = timelineZoomEnd
+  }, [timelineZoomEnd])
 
   const localizeVehicleType = useCallback(
     (raw: string) => {
@@ -247,21 +283,21 @@ export default function DashboardView() {
   }, [reconcileGarageSelection])
 
   const fetchAnalyticsOnly = useCallback(async () => {
-    const hasData = analyticsHasLoadedOnce
+    const hasData = analyticsHasLoadedOnceRef.current
     if (!hasData) {
       setAnalyticsLoading(true)
       setAnalyticsError(false)
     } else {
       setAnalyticsRefreshing(true)
     }
-    const signal = abortSignal ?? undefined
+    const signal = getAbortSignal() ?? undefined
     const config = signal ? { signal } : undefined
     const today = getTodayISO()
     const { from: monthFrom, to: monthTo } = getMonthStartEnd()
     try {
       const res = await getDashboardAnalytics(
         {
-          garage_id: selectedGarageId ?? undefined,
+          garage_id: selectedGarageIdRef.current ?? undefined,
           today,
           month_from: monthFrom,
           month_to: monthTo,
@@ -270,6 +306,7 @@ export default function DashboardView() {
       )
       setAnalytics(res.data)
       setAnalyticsError(false)
+      analyticsHasLoadedOnceRef.current = true
       setAnalyticsHasLoadedOnce(true)
     } catch (err: unknown) {
       if ((err as { code?: string })?.code === 'ERR_CANCELED') return
@@ -279,24 +316,28 @@ export default function DashboardView() {
       setAnalyticsLoading(false)
       setAnalyticsRefreshing(false)
     }
-  }, [analyticsHasLoadedOnce, abortSignal, selectedGarageId])
+  }, [getAbortSignal])
 
   const fetchTimelineOnly = useCallback(async () => {
-    const hasData = timelineRows.length > 0 || timelineHasLoadedOnce
+    const hasData =
+      timelineRowsLengthRef.current > 0 || timelineHasLoadedOnceRef.current
     if (!hasData) {
       setTimelineLoading(true)
       setTimelineError(false)
     } else {
       setTimelineRefreshing(true)
     }
-    const signal = abortSignal ?? undefined
+    const signal = getAbortSignal() ?? undefined
     const config = signal ? { signal } : undefined
+    const { fromDate, toDate } = rangeRef.current
     try {
       const res = await listTicketsDashboard(
         {
-          ...(selectedGarageId != null ? { garage_id: selectedGarageId } : {}),
-          from_date: range.fromDate,
-          to_date: range.toDate,
+          ...(selectedGarageIdRef.current != null
+            ? { garage_id: selectedGarageIdRef.current }
+            : {}),
+          from_date: fromDate,
+          to_date: toDate,
           limit: 5000,
           offset: 0,
         },
@@ -304,11 +345,12 @@ export default function DashboardView() {
       )
       setTimelineRows(res.data.items)
       setTimelineError(false)
-      const maxIdx = Math.max(timelinePoints.length - 1, 0)
-      if (!timelineHasLoadedOnce) {
+      const maxIdx = Math.max(timelinePointsLengthRef.current - 1, 0)
+      if (!timelineHasLoadedOnceRef.current || timelineZoomEndRef.current === 0) {
         setTimelineZoomStart(0)
         setTimelineZoomEnd(maxIdx)
       }
+      timelineHasLoadedOnceRef.current = true
       setTimelineHasLoadedOnce(true)
     } catch (err: unknown) {
       if ((err as { code?: string })?.code === 'ERR_CANCELED') return
@@ -318,14 +360,7 @@ export default function DashboardView() {
       setTimelineLoading(false)
       setTimelineRefreshing(false)
     }
-  }, [
-    timelineRows.length,
-    timelineHasLoadedOnce,
-    abortSignal,
-    selectedGarageId,
-    range,
-    timelinePoints.length,
-  ])
+  }, [getAbortSignal])
 
   const runRefreshCycle = useCallback(async () => {
     refreshDepth.current++
@@ -351,13 +386,16 @@ export default function DashboardView() {
     void runRefreshCycle()
   }, [runRefreshCycle])
 
+  const refreshAllRef = useRef(refreshAll)
+  refreshAllRef.current = refreshAll
+
   useEffect(() => {
     toast.clearToast()
     void loadGarages().then(() => {
-      refreshAll()
+      refreshAllRef.current()
       garageWatchReady.current = true
     })
-    const onRequest = () => refreshAll()
+    const onRequest = () => refreshAllRef.current()
     window.addEventListener(DASHBOARD_REQUEST_REFRESH_EVENT, onRequest)
     return () => {
       window.removeEventListener(DASHBOARD_REQUEST_REFRESH_EVENT, onRequest)
@@ -367,13 +405,13 @@ export default function DashboardView() {
 
   useEffect(() => {
     if (!garageWatchReady.current) return
-    refreshAll()
-  }, [selectedGarageId, refreshAll])
+    refreshAllRef.current()
+  }, [selectedGarageId])
 
   useEffect(() => {
     if (!garageWatchReady.current) return
-    refreshAll()
-  }, [selectedTimeFrame, refreshAll])
+    refreshAllRef.current()
+  }, [selectedTimeFrame])
 
   useEffect(() => {
     const maxIdx = Math.max(timelinePoints.length - 1, 0)
@@ -382,7 +420,7 @@ export default function DashboardView() {
   }, [timelineYAxisMode, timelinePoints.length])
 
   return (
-    <DashboardRefreshAbortProvider signal={abortSignal}>
+    <DashboardRefreshAbortProvider getSignal={getAbortSignal}>
       <div className="dashboard-sections">
         <div className="dashboard-layout-lg lg:items-stretch lg:grid lg:grid-cols-12 lg:gap-6">
           <div className="dashboard-fade dashboard-fade--1 h-full lg:col-span-5">
@@ -395,7 +433,10 @@ export default function DashboardView() {
               refreshing={analyticsRefreshing}
               error={analyticsError}
               hasLoadedOnce={analyticsHasLoadedOnce}
-              onRetry={() => void fetchAnalyticsOnly()}
+              onRetry={() => {
+                setAnalyticsRefreshing(true)
+                void fetchAnalyticsOnly()
+              }}
             />
           </div>
           <div className="by-garage-card dashboard-card shaddow-none dashboard-fade dashboard-fade--0 h-full p-4 lg:col-span-3">
@@ -416,7 +457,10 @@ export default function DashboardView() {
               refreshing={analyticsRefreshing}
               error={analyticsError}
               hasLoadedOnce={analyticsHasLoadedOnce}
-              onRetry={() => void fetchAnalyticsOnly()}
+              onRetry={() => {
+                setAnalyticsRefreshing(true)
+                void fetchAnalyticsOnly()
+              }}
             />
           </div>
         </div>
@@ -477,20 +521,20 @@ export default function DashboardView() {
         </div>
 
         <div className="dashboard-fade dashboard-fade--3">
-          {activeTab === 'overview' ? (
+          <div className={activeTab === 'overview' ? undefined : 'hidden'}>
             <GarageOverviewTable
               garageId={selectedGarageId ?? undefined}
               refreshKey={selectedTimeFrame}
             />
-          ) : null}
-          {activeTab === 'tickets' ? (
+          </div>
+          <div className={activeTab === 'tickets' ? undefined : 'hidden'}>
             <TicketActivity
               garageId={selectedGarageId ?? undefined}
               fromDate={range.fromDate}
               toDate={range.toDate}
             />
-          ) : null}
-          {activeTab === 'timeline' ? (
+          </div>
+          <div className={activeTab === 'timeline' ? undefined : 'hidden'}>
             <TimelineVehicleTypeChartBrush
               fromDate={range.fromDate}
               toDate={range.toDate}
@@ -507,7 +551,7 @@ export default function DashboardView() {
               onZoomStartChange={setTimelineZoomStart}
               onZoomEndChange={setTimelineZoomEnd}
             />
-          ) : null}
+          </div>
         </div>
       </div>
     </DashboardRefreshAbortProvider>

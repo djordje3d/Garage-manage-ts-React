@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Payment } from '../../api/payments'
 import { getPaymentsByTicket } from '../../api/payments'
@@ -35,7 +35,7 @@ export function TicketActivity({
   toDate,
 }: TicketActivityProps) {
   const { t } = useTranslation()
-  const dashboardRefreshAbortSignal = useDashboardRefreshAbortSignal()
+  const getAbortSignal = useDashboardRefreshAbortSignal()
 
   const [loading, setLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
@@ -65,7 +65,33 @@ export function TicketActivity({
   const [restToPayMap, setRestToPayMap] = useState<Record<number, number>>({})
   const paymentsCacheRef = useMemo(() => new Map<number, Payment[]>(), [])
 
-  const ticketsOffset = (ticketsPage - 1) * ticketsPageSize
+  const hasLoadedOnceRef = useRef(false)
+  const ticketsLengthRef = useRef(0)
+  const getAbortSignalRef = useRef(getAbortSignal)
+  const garageIdRef = useRef(garageId)
+  const fromDateRef = useRef(fromDate)
+  const toDateRef = useRef(toDate)
+  const ticketsPageRef = useRef(ticketsPage)
+  const ticketsPageSizeRef = useRef(ticketsPageSize)
+
+  useEffect(() => {
+    getAbortSignalRef.current = getAbortSignal
+  }, [getAbortSignal])
+
+  useEffect(() => {
+    ticketsLengthRef.current = tickets.length
+  }, [tickets.length])
+
+  useEffect(() => {
+    garageIdRef.current = garageId
+    fromDateRef.current = fromDate
+    toDateRef.current = toDate
+  }, [garageId, fromDate, toDate])
+
+  useEffect(() => {
+    ticketsPageRef.current = ticketsPage
+    ticketsPageSizeRef.current = ticketsPageSize
+  }, [ticketsPage, ticketsPageSize])
 
   const barcodeImageSrc = useMemo(() => {
     const ticket = viewingTicket
@@ -141,7 +167,7 @@ export function TicketActivity({
 
   function viewTicket(ticket: TicketDashboardRow) {
     setViewingTicket(ticket)
-    const signal = dashboardRefreshAbortSignal ?? undefined
+    const signal = getAbortSignal() ?? undefined
     void fetchPaymentsForView(
       ticket.id,
       signal ? { signal } : undefined,
@@ -182,78 +208,72 @@ export function TicketActivity({
     })
   }
 
-  const fetchData = useCallback(
-    async (refreshEpoch?: number) => {
-      const hasData = tickets.length > 0 || hasLoadedOnce
+  const fetchData = useCallback(async (refreshEpoch?: number) => {
+    const hasData = ticketsLengthRef.current > 0 || hasLoadedOnceRef.current
+    const offset = (ticketsPageRef.current - 1) * ticketsPageSizeRef.current
 
+    if (!hasData) {
+      setLoading(true)
+      setError(false)
+      setRestToPayMap({})
+    } else {
+      setRefreshing(true)
+    }
+
+    const signal = getAbortSignalRef.current() ?? undefined
+    const config = signal ? { signal } : undefined
+
+    try {
+      const res = await listTicketsDashboard(
+        {
+          ...(garageIdRef.current != null ? { garage_id: garageIdRef.current } : {}),
+          ...(fromDateRef.current ? { from_date: fromDateRef.current } : {}),
+          ...(toDateRef.current ? { to_date: toDateRef.current } : {}),
+          limit: ticketsPageSizeRef.current,
+          offset,
+        },
+        config,
+      )
+
+      setTickets(res.data.items)
+      setTicketsTotal(res.data.total)
+      setRestToPayMap(
+        Object.fromEntries(
+          res.data.items.map((item) => [item.id, item.rest_to_pay ?? 0]),
+        ),
+      )
+      hasLoadedOnceRef.current = true
+      setHasLoadedOnce(true)
+      setError(false)
+    } catch (err: unknown) {
+      if ((err as { code?: string })?.code === 'ERR_CANCELED') return
+      setError(true)
       if (!hasData) {
-        setLoading(true)
-        setError(false)
+        setTickets([])
+        setTicketsTotal(0)
         setRestToPayMap({})
-      } else {
-        setRefreshing(true)
       }
-
-      const signal = dashboardRefreshAbortSignal ?? undefined
-      const config = signal ? { signal } : undefined
-
-      try {
-        const res = await listTicketsDashboard(
-          {
-            ...(garageId != null ? { garage_id: garageId } : {}),
-            ...(fromDate ? { from_date: fromDate } : {}),
-            ...(toDate ? { to_date: toDate } : {}),
-            limit: ticketsPageSize,
-            offset: ticketsOffset,
-          },
-          config,
+    } finally {
+      setLoading(false)
+      setRefreshing(false)
+      if (refreshEpoch != null && refreshEpoch > 0) {
+        window.dispatchEvent(
+          new CustomEvent(DASHBOARD_WIDGET_FETCH_DONE, {
+            detail: { epoch: refreshEpoch },
+          }),
         )
-
-        setTickets(res.data.items)
-        setTicketsTotal(res.data.total)
-        setRestToPayMap(
-          Object.fromEntries(
-            res.data.items.map((item) => [item.id, item.rest_to_pay ?? 0]),
-          ),
-        )
-        setHasLoadedOnce(true)
-        setError(false)
-      } catch (err: unknown) {
-        if ((err as { code?: string })?.code === 'ERR_CANCELED') return
-        setError(true)
-        if (!hasData) {
-          setTickets([])
-          setTicketsTotal(0)
-          setRestToPayMap({})
-        }
-      } finally {
-        setLoading(false)
-        setRefreshing(false)
-        if (refreshEpoch != null && refreshEpoch > 0) {
-          window.dispatchEvent(
-            new CustomEvent(DASHBOARD_WIDGET_FETCH_DONE, {
-              detail: { epoch: refreshEpoch },
-            }),
-          )
-        }
       }
-    },
-    [
-      dashboardRefreshAbortSignal,
-      fromDate,
-      garageId,
-      hasLoadedOnce,
-      tickets.length,
-      ticketsOffset,
-      ticketsPageSize,
-      toDate,
-    ],
-  )
+    }
+  }, [])
+
+  const fetchDataRef = useRef(fetchData)
+  fetchDataRef.current = fetchData
 
   const retry = useCallback(() => {
     setError(false)
-    void fetchData()
-  }, [fetchData])
+    setRefreshing(true)
+    void fetchDataRef.current()
+  }, [])
 
   function handleTicketsPageSizeChange(value: number) {
     setTicketsPageSize(value)
@@ -261,29 +281,30 @@ export function TicketActivity({
   }
 
   useEffect(() => {
+    hasLoadedOnceRef.current = false
+    setHasLoadedOnce(false)
+    setTickets([])
+    setTicketsTotal(0)
     setTicketsPage(1)
-    void fetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    void fetchDataRef.current()
   }, [garageId, fromDate, toDate])
 
   useEffect(() => {
-    if (!hasLoadedOnce) return
-    void fetchData()
-  }, [ticketsPage, ticketsPageSize, hasLoadedOnce, fetchData])
+    if (!hasLoadedOnceRef.current) return
+    void fetchDataRef.current()
+  }, [ticketsPage, ticketsPageSize])
 
   useEffect(() => {
     const onDashboardRefresh = (e: Event) => {
       const epoch = (e as CustomEvent<{ epoch?: number }>).detail?.epoch
-      void fetchData(epoch)
+      void fetchDataRef.current(epoch)
     }
 
     window.addEventListener(DASHBOARD_REFRESH_EVENT, onDashboardRefresh)
-    void fetchData()
 
     return () => {
       window.removeEventListener(DASHBOARD_REFRESH_EVENT, onDashboardRefresh)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

@@ -7,6 +7,10 @@ import './ui-components.css'
 export type ModalProps = {
   modelValue: boolean
   title?: string
+  /** Header close button label (Vue Modal uses a plain Cancel; pass i18n from parent). */
+  closeLabel?: string
+  /** When false, only the title shows in the header (some modals use footer actions only). */
+  showHeaderClose?: boolean
   children?: ReactNode
   footer?: ReactNode
   onModelValueChange?: (value: boolean) => void
@@ -15,6 +19,8 @@ export type ModalProps = {
 export function Modal({
   modelValue,
   title,
+  closeLabel = 'Cancel',
+  showHeaderClose = true,
   children,
   footer,
   onModelValueChange,
@@ -49,13 +55,15 @@ export function Modal({
             >
               {title}
             </h2>
-            <ButtonIn
-              id="cancelBtn"
-              label="Cancel"
-              variant="outline"
-              onUserClick={close}
-              caption="Cancel"
-            />
+            {showHeaderClose ? (
+              <ButtonIn
+                id="modalCloseBtn"
+                label={closeLabel}
+                variant="outline"
+                onUserClick={close}
+                caption={closeLabel}
+              />
+            ) : null}
           </div>
         ) : null}
         <div className="modal-body">{children}</div>

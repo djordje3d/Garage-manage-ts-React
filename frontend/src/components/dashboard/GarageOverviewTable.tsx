@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { getGarageOverview } from '../../api/garages'
@@ -29,7 +29,7 @@ export function GarageOverviewTable({
 }: GarageOverviewTableProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const dashboardRefreshAbortSignal = useDashboardRefreshAbortSignal()
+  const getAbortSignal = useDashboardRefreshAbortSignal()
 
   const [loading, setLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
@@ -37,71 +37,96 @@ export function GarageOverviewTable({
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false)
   const [rows, setRows] = useState<Row[]>([])
 
-  const fetchData = useCallback(
-    async (refreshEpoch?: number) => {
-      const hasData = rows.length > 0 || hasLoadedOnce
+  const hasLoadedOnceRef = useRef(false)
+  const rowsLengthRef = useRef(0)
+  const garageIdRef = useRef(garageId)
+  const getAbortSignalRef = useRef(getAbortSignal)
 
-      if (!hasData) {
-        setLoading(true)
-        setError(false)
-      } else {
-        setRefreshing(true)
-      }
+  useEffect(() => {
+    getAbortSignalRef.current = getAbortSignal
+  }, [getAbortSignal])
 
-      const signal = dashboardRefreshAbortSignal ?? undefined
-      const config = signal ? { signal } : undefined
+  useEffect(() => {
+    rowsLengthRef.current = rows.length
+  }, [rows.length])
 
-      try {
-        const res = await getGarageOverview(garageId ?? undefined, config)
-        setRows(
-          res.data.map((r) => ({
-            garage_id: r.garage_id,
-            name: r.name,
-            total_spots: r.total_spots,
-            free: r.free_spots,
-            occupied: r.occupied_spots,
-            rentable: r.rentable_spots,
-          })),
+  useEffect(() => {
+    garageIdRef.current = garageId
+  }, [garageId])
+
+  const fetchData = useCallback(async (refreshEpoch?: number) => {
+    const hasData = rowsLengthRef.current > 0 || hasLoadedOnceRef.current
+
+    if (!hasData) {
+      setLoading(true)
+      setError(false)
+    } else {
+      setRefreshing(true)
+    }
+
+    const signal = getAbortSignalRef.current() ?? undefined
+    const config = signal ? { signal } : undefined
+
+    try {
+      const res = await getGarageOverview(garageIdRef.current ?? undefined, config)
+      setRows(
+        res.data.map((r) => ({
+          garage_id: r.garage_id,
+          name: r.name,
+          total_spots: r.total_spots,
+          free: r.free_spots,
+          occupied: r.occupied_spots,
+          rentable: r.rentable_spots,
+        })),
+      )
+      hasLoadedOnceRef.current = true
+      setHasLoadedOnce(true)
+      setError(false)
+    } catch (err: unknown) {
+      if ((err as { code?: string })?.code === 'ERR_CANCELED') return
+      setError(true)
+      if (!hasData) setRows([])
+    } finally {
+      setLoading(false)
+      setRefreshing(false)
+      if (refreshEpoch != null && refreshEpoch > 0) {
+        window.dispatchEvent(
+          new CustomEvent(DASHBOARD_WIDGET_FETCH_DONE, {
+            detail: { epoch: refreshEpoch },
+          }),
         )
-        setHasLoadedOnce(true)
-        setError(false)
-      } catch (err: unknown) {
-        if ((err as { code?: string })?.code === 'ERR_CANCELED') return
-        setError(true)
-        if (!hasData) setRows([])
-      } finally {
-        setLoading(false)
-        setRefreshing(false)
-        if (refreshEpoch != null && refreshEpoch > 0) {
-          window.dispatchEvent(
-            new CustomEvent(DASHBOARD_WIDGET_FETCH_DONE, {
-              detail: { epoch: refreshEpoch },
-            }),
-          )
-        }
       }
-    },
-    [dashboardRefreshAbortSignal, garageId, hasLoadedOnce, rows.length],
-  )
+    }
+  }, [])
+
+  const fetchDataRef = useRef(fetchData)
+  fetchDataRef.current = fetchData
 
   const retry = useCallback(() => {
     setError(false)
-    void fetchData()
-  }, [fetchData])
+    setRefreshing(true)
+    void fetchDataRef.current()
+  }, [])
+
+  useEffect(() => {
+    hasLoadedOnceRef.current = false
+    setHasLoadedOnce(false)
+    setRows([])
+  }, [garageId, refreshKey])
 
   useEffect(() => {
     const onDashboardRefresh = (e: Event) => {
       const epoch = (e as CustomEvent<{ epoch?: number }>).detail?.epoch
-      void fetchData(epoch)
+      void fetchDataRef.current(epoch)
     }
 
     window.addEventListener(DASHBOARD_REFRESH_EVENT, onDashboardRefresh)
-    void fetchData()
+    void fetchDataRef.current()
 
     return () => {
       window.removeEventListener(DASHBOARD_REFRESH_EVENT, onDashboardRefresh)
     }
-  }, [fetchData, refreshKey])
+  }, [garageId, refreshKey])
 
   return (
     <div className="dashboard-card overflow-hidden">

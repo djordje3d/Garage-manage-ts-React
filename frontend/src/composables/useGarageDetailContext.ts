@@ -19,10 +19,10 @@ export function useGarageDetailContext() {
   return {
     garageId,
     refreshAbortControllerRef: refresh.refreshAbortControllerRef,
-    abortSignal: refresh.abortSignal,
+    getAbortSignal: refresh.getAbortSignal,
     prepareRefreshCycle: refresh.prepareRefreshCycle,
     dashboardRefresh: {
-      abortSignal: refresh.abortSignal,
+      getAbortSignal: refresh.getAbortSignal,
       prepareRefreshCycle: refresh.prepareRefreshCycle,
     },
   }

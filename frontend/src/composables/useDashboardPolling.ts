@@ -12,8 +12,11 @@ export function useDashboardPolling(
 
   const pollIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const tickIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const refreshRef = useRef(refresh)
   const [remainingMs, setRemainingMs] = useState(intervalMs)
   const [isRunning, setIsRunning] = useState(false)
+
+  refreshRef.current = refresh
 
   const stopCountdown = (resetToFull = false) => {
     if (tickIdRef.current) {
@@ -42,7 +45,7 @@ export function useDashboardPolling(
   }
 
   const doRefreshAndRestartCountdown = () => {
-    refresh()
+    refreshRef.current()
     if (document.visibilityState === 'visible' && enabled) {
       startCountdown()
     }
@@ -79,6 +82,23 @@ export function useDashboardPolling(
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, intervalMs])
+
+  const enabledEffectInitialized = useRef(false)
+  useEffect(() => {
+    if (!enabledEffectInitialized.current) {
+      enabledEffectInitialized.current = true
+      return
+    }
+    if (document.visibilityState !== 'visible') return
+
+    if (enabled) {
+      doRefreshAndRestartCountdown()
+      startPolling()
+    } else {
+      stopPolling(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled])
 
   return { startPolling, stopPolling, remainingMs, intervalMs, isRunning }
 }

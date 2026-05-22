@@ -14,6 +14,7 @@ import { clearGaragesCache } from './utils/garageCache'
 import { refresh as refreshToken } from './api/auth'
 import { useDashboardPolling } from './composables/useDashboardPolling'
 import { DASHBOARD_REQUEST_REFRESH_EVENT } from './constants/dashboardRefresh'
+import { DASHBOARD_REFRESH_EVENT } from './contexts/dashboardRefresh'
 import './app.css'
 
 const AUTO_REFRESH_STORAGE_KEY = 'dashboard-auto-refresh'
@@ -328,9 +329,11 @@ export default function App() {
   }, [isLoginPage, clearAllTimers, startSessionTimers])
 
   const onNewEntryDone = () => {
-    setShowNewEntry(false)
-    toast.showToast('Vehicle entry created.')
-    window.dispatchEvent(new CustomEvent(DASHBOARD_REQUEST_REFRESH_EVENT))
+    queueMicrotask(() => {
+      setShowNewEntry(false)
+      toast.showToast('Vehicle entry created.')
+      window.dispatchEvent(new CustomEvent(DASHBOARD_REFRESH_EVENT))
+    })
   }
 
   return (
