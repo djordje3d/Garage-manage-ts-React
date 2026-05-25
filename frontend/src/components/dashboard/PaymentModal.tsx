@@ -126,6 +126,7 @@ export function PaymentModal({
     <Modal
       modelValue={modelValue}
       title={modalTitle}
+      showHeaderClose={false}
       onModelValueChange={onModelValueChange}
     >
       <p className="mt-1 text-sm text-gray-600">

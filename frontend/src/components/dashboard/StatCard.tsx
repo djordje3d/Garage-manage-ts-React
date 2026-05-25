@@ -1,23 +1,23 @@
-import { useMemo } from 'react'
-import { HelpTooltip } from '../ui/HelpTooltip'
-import './dashboard-components.css'
+import { useMemo } from "react";
+import { HelpTooltip } from "../ui/HelpTooltip";
+import "./dashboard-components.css";
 
 const DEFAULT_ICONS: Record<string, string> = {
-  free: 'checkmark',
-  occupied: 'truck',
-  inactive: 'blocked',
-  tickets: 'ticket',
-  default: 'grid',
-}
+  free: "checkmark",
+  occupied: "truck",
+  inactive: "blocked",
+  tickets: "ticket",
+  default: "grid",
+};
 
 export type StatCardProps = {
-  label: string
-  value: number
-  icon?: string
-  type?: 'free' | 'occupied' | 'inactive' | 'tickets'
-  helpText?: string
-  helpAriaLabel?: string
-}
+  label: string;
+  value: number;
+  icon?: string;
+  type?: "free" | "occupied" | "inactive" | "tickets";
+  helpText?: string;
+  helpAriaLabel?: string;
+};
 
 export function StatCard({
   label,
@@ -27,12 +27,12 @@ export function StatCard({
   helpText,
   helpAriaLabel,
 }: StatCardProps) {
-  const icon = useMemo(() => {
-    if (iconProp) return iconProp
-    if (type) return DEFAULT_ICONS[type]
-    return DEFAULT_ICONS.default
-  }, [iconProp, type])
-
+  // const icon = useMemo(() => {
+  //   if (iconProp) return iconProp
+  //   if (type) return DEFAULT_ICONS[type]
+  //   return DEFAULT_ICONS.default
+  // }, [iconProp, type])
+  const icon = iconProp || (type ? DEFAULT_ICONS[type] : DEFAULT_ICONS.default);
   return (
     <div className="dashboard-card group relative p-5">
       {helpText ? (
@@ -57,5 +57,5 @@ export function StatCard({
         </div>
       </div>
     </div>
-  )
+  );
 }

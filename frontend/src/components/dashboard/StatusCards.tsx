@@ -70,7 +70,7 @@ export function StatusCards({
 
   return (
     <div className="relative h-full">
-      {refreshing ? (
+      {refreshing && (
         <div
           className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/65 backdrop-blur-[1px]"
           aria-busy="true"
@@ -81,7 +81,7 @@ export function StatusCards({
             aria-hidden="true"
           />
         </div>
-      ) : null}
+      )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <StatCard

@@ -57,7 +57,7 @@
     "chooseFile": "Choose file",
     "noFileChosen": "No file chosen",
     "imageProcessing": "Resizing image…",
-    "imageReady": "{name} — ready to upload",
+    "imageReady": "{{name}} — ready to upload",
     "imageResizeFailed": "Could not process the image. Try another file.",
     "clearImage": "Clear image",
     "cancel": "Cancel",
@@ -271,7 +271,7 @@
   "garageSpots": {
     "subtitle": "Overview of active and rentable parking spots.",
     "loadFailed": "Failed to load spots.",
-    "totalCount": "{count} total"
+    "totalCount": "{{count}} total"
   },
   "help": {
     "statusCards": {

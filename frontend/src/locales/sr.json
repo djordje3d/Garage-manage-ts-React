@@ -57,7 +57,7 @@
     "chooseFile": "Izaberi fajl",
     "noFileChosen": "Nije izabran nijedan fajl",
     "imageProcessing": "Smanjivanje slike…",
-    "imageReady": "{name} — spremno za slanje",
+    "imageReady": "{{name}} — spremno za slanje",
     "imageResizeFailed": "Obrada slike nije uspela. Probajte drugi fajl.",
     "clearImage": "Ukloni sliku",
     "cancel": "Otkaži",
@@ -274,7 +274,7 @@
   "garageSpots": {
     "subtitle": "Pregled aktivnih parking mesta i mesta za izdavanje.",
     "loadFailed": "Učitavanje mesta nije uspelo.",
-    "totalCount": "{count} ukupno"
+    "totalCount": "{{count}} ukupno"
   },
   "help": {
     "statusCards": {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import './ui-components.css'
 
@@ -18,6 +18,7 @@ export function ImageIn({
 }: ImageInProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const imgRef = useRef<HTMLImageElement>(null)
 
   const imageStyle = useMemo((): CSSProperties => {
     const style: CSSProperties = {}
@@ -30,28 +31,38 @@ export function ImageIn({
     return style
   }, [aspectRatio, objectFit])
 
+  // Reset loading state when src changes, then check if the browser already
+  // has the image cached (.complete). Without the post-effect check, a cached
+  // image (304 Not Modified) fires onLoad before this effect runs, and the
+  // effect overwrites loading back to true — leaving the spinner stuck forever.
   useEffect(() => {
     if (src) {
       setLoading(true)
       setError(false)
+
+      const img = imgRef.current
+      if (img && img.complete && img.naturalWidth > 0) {
+        setLoading(false)
+      }
     }
   }, [src])
 
-  function onLoad() {
+  const onLoad = useCallback(() => {
     setLoading(false)
     setError(false)
-  }
+  }, [])
 
-  function onError() {
+  const onError = useCallback(() => {
     setLoading(false)
     setError(true)
-  }
+  }, [])
 
   if (!src) return null
 
   return (
     <div className="image-in-wrap relative min-h-[120px] max-h-[200px]">
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
         className={cn(

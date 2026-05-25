@@ -43,6 +43,7 @@ export function TicketDetailModal({
     <Modal
       modelValue={modelValue}
       title={modalTitle}
+      showHeaderClose={false}
       onModelValueChange={onModelValueChange}
     >
       {ticket ? (
