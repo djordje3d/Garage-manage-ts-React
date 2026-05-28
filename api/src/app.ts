@@ -1,7 +1,6 @@
 import fs from "fs";
 import cors from "cors";
 import express from "express";
-import path from "path";
 import { env, corsOrigins } from "./config/env";
 import rootRouter from "./routes/root";
 import authRouter from "./routes/auth";
@@ -33,7 +32,6 @@ app.use(express.json({ limit: "1mb" }));
 app.use(apiKeyOrJwtMiddleware);
 
 fs.mkdirSync(env.uploadDir, { recursive: true });
-app.use("/uploads", express.static(path.resolve(env.uploadDir)));
 
 app.use("/", rootRouter);
 app.use("/auth", authRouter);

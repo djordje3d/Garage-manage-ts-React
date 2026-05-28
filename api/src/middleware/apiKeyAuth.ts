@@ -9,7 +9,6 @@ function isPublicPath(reqPath: string, method: string): boolean {
   if (reqPath === "/" && method === "GET") return true;
   if (reqPath === "/health" && method === "GET") return true;
   if (reqPath === "/auth/login" && method === "POST") return true;
-  if (method === "GET" && reqPath.startsWith("/uploads/")) return true;
   return false;
 }
 

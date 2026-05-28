@@ -51,7 +51,9 @@ Safe to re-run; it only inserts new rows (it does not truncate existing data).
 - If `API_KEY` is set, all non-public routes require either:
   - `X-API-Key: <API_KEY>`
   - `Authorization: Bearer <token>`
-- Public routes: `GET /`, `GET /health`, `POST /auth/login`, `GET /uploads/*`.
+- Public routes: `GET /`, `GET /health`, `POST /auth/login`.
+
+Ticket images are written to `UPLOAD_DIR` (shared with Python `fileserver/storage`) and served by the Vite fileserver on port **9009**, not by this API.
 
 ## Main endpoints
 
@@ -67,4 +69,4 @@ Safe to re-run; it only inserts new rows (it does not truncate existing data).
 - `/tickets`
 - `/payments`
 - `GET /dashboard/analytics`
-- `POST /upload/ticket-image`
+- `POST /upload/ticket-image` — saves to `UPLOAD_DIR`, returns `{ "url": "/ticket_<id>.jpg" }` for use with `VITE_FILESERVER_URL`

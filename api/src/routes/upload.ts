@@ -15,7 +15,6 @@ const CONTENT_TYPE_TO_EXT: Record<string, string> = {
   "image/webp": ".webp"
 };
 const ALLOWED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp"]);
-const TICKET_IMAGE_SUBDIR = "tickets";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -52,12 +51,11 @@ router.post("/ticket-image", upload.single("file"), async (req, res, next) => {
 
     const ext = extFromContentType(file.mimetype) || safeExt(file.originalname);
     const filename = `ticket_${crypto.randomUUID().replace(/-/g, "")}${ext}`;
-    const subdir = path.join(env.uploadDir, TICKET_IMAGE_SUBDIR);
-    fs.mkdirSync(subdir, { recursive: true });
-    const target = path.join(subdir, filename);
+    fs.mkdirSync(env.uploadDir, { recursive: true });
+    const target = path.join(env.uploadDir, filename);
     fs.writeFileSync(target, file.buffer);
 
-    res.json({ url: `/uploads/${TICKET_IMAGE_SUBDIR}/${filename}` });
+    res.json({ url: `/${filename}` });
   } catch (e) {
     next(e);
   }

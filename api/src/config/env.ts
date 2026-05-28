@@ -81,6 +81,7 @@ const defaultCorsOrigins = [
 export const corsOrigins = corsValid.length > 0 ? corsValid : defaultCorsOrigins;
 
 const projectRoot = path.resolve(__dirname, "..", "..");
+// Default is local fallback; set UPLOAD_DIR to APIPostgreSql/fileserver/storage for shared fileserver on :9009
 const defaultUploadDir = path.join(projectRoot, "static", "uploads");
 
 export const env = {
