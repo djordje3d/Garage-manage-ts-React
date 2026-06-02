@@ -60,14 +60,14 @@ if (corsInvalid.length > 0) {
 if (isProduction && !corsDisabled && !corsRaw) {
   throw new Error(
     "In production, CORS_ORIGINS must be set to your frontend origin(s). " +
-      "Set ENVIRONMENT=production only when CORS_ORIGINS is set, or set CORS_DISABLED=true."
+    "Set ENVIRONMENT=production only when CORS_ORIGINS is set, or set CORS_DISABLED=true."
   );
 }
 
 if (isProduction && corsInvalid.length > 0) {
   throw new Error(
     "CORS_ORIGINS has invalid entries in production; fix or remove them: " +
-      corsInvalid.map((e) => JSON.stringify(e)).join(", ")
+    corsInvalid.map((e) => JSON.stringify(e)).join(", ")
   );
 }
 
@@ -83,6 +83,11 @@ export const corsOrigins = corsValid.length > 0 ? corsValid : defaultCorsOrigins
 const projectRoot = path.resolve(__dirname, "..", "..");
 // Default is local fallback; set UPLOAD_DIR to APIPostgreSql/fileserver/storage for shared fileserver on :9009
 const defaultUploadDir = path.join(projectRoot, "static", "uploads");
+
+const rawUploadDir = (process.env.UPLOAD_DIR ?? "").trim();
+const resolvedUploadDir = rawUploadDir
+  ? (path.isAbsolute(rawUploadDir) ? rawUploadDir : path.resolve(projectRoot, rawUploadDir))
+  : defaultUploadDir;
 
 export const env = {
   port: envInt("PORT", 4000),
@@ -110,7 +115,7 @@ export const env = {
   corsAllowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"] as const,
   corsAllowHeaders: ["Content-Type", "Accept", "Authorization", "X-API-Key"],
 
-  uploadDir: process.env.UPLOAD_DIR?.trim() || defaultUploadDir,
+  uploadDir: resolvedUploadDir,
   uploadTicketImageMaxBytes: envInt("UPLOAD_TICKET_IMAGE_MAX_BYTES", 5 * 1024 * 1024),
 
   isProduction

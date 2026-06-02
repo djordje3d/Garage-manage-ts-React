@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "api_nodejs",
   "version": "1.0.0",
   "description": "Garage Manage REST API",
   "main": "dist/server.js",
